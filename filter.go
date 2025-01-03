@@ -52,7 +52,7 @@ func processMatch(key, value string, res *Query) {
 			}
 		}
 
-		res.Match[key] = result
+		res.Match[key] = bson.M{"$in": result}
 	}
 }
 
