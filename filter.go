@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func processSort(sortValue string, res *Query) {
@@ -39,13 +40,19 @@ func processMatch(key, value string, res *Query) {
 		res.Match[key] = (value == "true")
 	} else if strings.Contains(value, "~") { // range (int / date)
 		processRange(key, value, res)
-	} else { // string
+	} else { // string / oid
 		params := strings.Split(value, ",")
-		if len(params) > 1 {
-			res.Match[key] = bson.M{"$in": params}
-		} else {
-			res.Match[key] = value
+		result := make([]interface{}, 0, len(params))
+
+		for _, param := range params {
+			if oid, err := primitive.ObjectIDFromHex(param); err == nil {
+				result = append(result, oid)
+			} else {
+				result = append(result, param)
+			}
 		}
+
+		res.Match[key] = result
 	}
 }
 
