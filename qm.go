@@ -20,6 +20,9 @@ func Search(query map[string]string) (Query, error) {
 	for k, v := range query {
 		switch k {
 		case "sort":
+			if v == "" {
+				continue
+			}
 			processSort(v, &res)
 		case "limit":
 			processPagination(v, query["page"], &res)
