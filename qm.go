@@ -14,15 +14,14 @@ type Query struct {
 func Search(query map[string]string) (Query, error) {
 	res := Query{
 		Match: bson.M{},
-		Sort:  bson.M{},
+		Sort: bson.M{
+			"_id": -1,
+		},
 	}
 
 	for k, v := range query {
 		switch k {
 		case "sort":
-			if v == "" {
-				continue
-			}
 			processSort(v, &res)
 		case "limit":
 			processPagination(v, query["page"], &res)
