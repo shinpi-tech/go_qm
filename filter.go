@@ -11,20 +11,29 @@ import (
 )
 
 func processSort(sortValue string, res *Query) {
+	// Если строка сортировки пустая, ничего не делаем
+	if sortValue == "" {
+		return
+	}
+
 	sortParams := strings.Split(sortValue, ",")
 	for _, param := range sortParams {
+		var field string
+		var order int
+
 		if strings.HasPrefix(param, "-") {
-			field := strings.TrimPrefix(param, "-")
-			if field == "id" {
-				field = "_id"
-			}
-			res.Sort[field] = -1
+			field = strings.TrimPrefix(param, "-")
+			order = -1
 		} else {
-			if param == "id" {
-				param = "_id"
-			}
-			res.Sort[param] = 1
+			field = param
+			order = 1
 		}
+
+		if field == "id" {
+			field = "_id"
+		}
+
+		res.Sort[field] = order
 	}
 }
 
