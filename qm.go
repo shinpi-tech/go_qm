@@ -17,6 +17,8 @@ func Search(query map[string]string) (Query, error) {
 		Sort: bson.M{
 			"_id": -1,
 		},
+		Page:  1,
+		Limit: 30,
 	}
 
 	for k, v := range query {

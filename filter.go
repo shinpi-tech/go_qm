@@ -1,6 +1,7 @@
 package qm
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -28,7 +29,7 @@ func processPagination(limitStr, pageStr string, res *Query) {
 	}
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
-		return
+		limit = 30
 	}
 
 	res.Page = page
@@ -42,17 +43,39 @@ func processMatch(key, value string, res *Query) {
 		processRange(key, value, res)
 	} else { // string / oid
 		params := strings.Split(value, ",")
-		result := make([]interface{}, 0, len(params))
-
-		for _, param := range params {
-			if oid, err := primitive.ObjectIDFromHex(param); err == nil {
-				result = append(result, oid)
-			} else {
-				result = append(result, param)
-			}
+		if key == "id" {
+			key = "_id"
 		}
 
-		res.Match[key] = bson.M{"$in": result}
+		if len(params) == 1 {
+			if oid, err := primitive.ObjectIDFromHex(params[0]); err == nil {
+				res.Match[key] = oid
+			} else {
+				res.Match[key] = params[0]
+			}
+		} else {
+			typeString := true
+			result := make([]any, 0, len(params))
+
+			for _, param := range params {
+				if oid, err := primitive.ObjectIDFromHex(param); err == nil {
+					typeString = false
+					result = append(result, oid)
+				} else {
+					result = append(result, fmt.Sprintf("%v", param))
+				}
+			}
+
+			if typeString {
+				strResult := make([]string, len(result))
+				for i, v := range result {
+					strResult[i] = v.(string)
+				}
+				res.Match[key] = bson.M{"$in": strResult}
+			} else {
+				res.Match[key] = bson.M{"$in": result}
+			}
+		}
 	}
 }
 
@@ -74,7 +97,7 @@ func processRange(key, value string, res *Query) {
 			param = strings.TrimPrefix(param, "!")
 		}
 
-		createCondition := func(value interface{}) bson.M {
+		createCondition := func(value any) bson.M {
 			if inclusive {
 				switch operator {
 				case "$gt":
