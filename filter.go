@@ -15,8 +15,14 @@ func processSort(sortValue string, res *Query) {
 	for _, param := range sortParams {
 		if strings.HasPrefix(param, "-") {
 			field := strings.TrimPrefix(param, "-")
+			if field == "id" {
+				field = "_id"
+			}
 			res.Sort[field] = -1
 		} else {
+			if param == "id" {
+				param = "_id"
+			}
 			res.Sort[param] = 1
 		}
 	}
