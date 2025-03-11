@@ -14,9 +14,7 @@ type Query struct {
 func Search(query map[string]string) (Query, error) {
 	res := Query{
 		Match: bson.M{},
-		Sort: bson.M{
-			"_id": -1,
-		},
+		Sort:  bson.M{},
 		Page:  1,
 		Limit: 30,
 	}
