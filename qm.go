@@ -6,7 +6,7 @@ import (
 
 type Query struct {
 	Match bson.M
-	Sort  bson.M
+	Sort  bson.D
 	Page  int
 	Limit int
 }
@@ -14,7 +14,7 @@ type Query struct {
 func Search(query map[string]string) (Query, error) {
 	res := Query{
 		Match: bson.M{},
-		Sort:  bson.M{},
+		Sort:  bson.D{},
 		Page:  1,
 		Limit: 30,
 	}
@@ -32,7 +32,7 @@ func Search(query map[string]string) (Query, error) {
 		}
 	}
 
-	res.Sort["_id"] = 1
+	res.Sort = append(res.Sort, bson.E{Key: "_id", Value: 1})
 
 	return res, nil
 }

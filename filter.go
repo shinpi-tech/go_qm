@@ -32,7 +32,7 @@ func processSort(sortValue string, res *Query) {
 			field = "_id"
 		}
 
-		res.Sort[field] = order
+		res.Sort = append(res.Sort, bson.E{Key: field, Value: order})
 	}
 }
 
