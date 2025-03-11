@@ -11,7 +11,6 @@ import (
 )
 
 func processSort(sortValue string, res *Query) {
-	// Если строка сортировки пустая, ничего не делаем
 	if sortValue == "" {
 		return
 	}

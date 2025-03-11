@@ -31,7 +31,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{},
-				Sort:  bson.M{"price": -1},
+				Sort:  bson.M{"price": -1, "_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -43,7 +43,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{},
-				Sort:  bson.M{"price": 1},
+				Sort:  bson.M{"price": 1, "_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -56,7 +56,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Limit: 50,
 				Page:  2,
 			},
@@ -68,7 +68,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"price": bson.M{"$gte": 100, "$lte": 200}},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -80,7 +80,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"price": bson.M{"$gte": 100}},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -92,7 +92,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"_id": oid},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -104,7 +104,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"brand": bson.M{"$in": []any{oid, oid}}},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -116,7 +116,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"params.load_index": bson.M{"$gte": tFrom, "$lt": tTo}},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -128,7 +128,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"params.width": bson.M{"$in": []string{"test1", "test2", "test3"}}},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},
@@ -140,7 +140,7 @@ func TestSearch(t *testing.T) {
 			},
 			expected: Query{
 				Match: bson.M{"available": true},
-				Sort:  bson.M{},
+				Sort:  bson.M{"_id": 1},
 				Page:  1,
 				Limit: 30,
 			},

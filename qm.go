@@ -32,5 +32,7 @@ func Search(query map[string]string) (Query, error) {
 		}
 	}
 
+	res.Sort["_id"] = 1
+
 	return res, nil
 }
