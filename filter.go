@@ -112,19 +112,19 @@ func processRange(key, value string, res *Query) {
 		}
 
 		createCondition := func(value any) bson.M {
-			if inclusive {
+			if !inclusive {
 				switch operator {
-				case "$gt":
-					return bson.M{"$gte": value}
-				case "$lt":
-					return bson.M{"$lte": value}
+				case "$gte":
+					return bson.M{"$gt": value}
+				case "$lte":
+					return bson.M{"$lt": value}
 				}
 			}
 			return bson.M{operator: value}
 		}
 
 		// DATE
-		if paramDate, err := time.Parse("02-01-2006", param); err == nil {
+		if paramDate, err := time.Parse(time.RFC3339, param); err == nil {
 			return createCondition(paramDate)
 		}
 		// INT
