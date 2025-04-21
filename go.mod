@@ -1,5 +1,7 @@
 module github.com/shinpi-tech/go_qm
 
-go 1.21.2
+go 1.24.2
 
-require go.mongodb.org/mongo-driver v1.17.1
+require (
+	go.mongodb.org/mongo-driver/v2 v2.2.0
+)

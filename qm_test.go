@@ -5,18 +5,17 @@ import (
 	"testing"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func TestSearch(t *testing.T) {
-	oid, _ := primitive.ObjectIDFromHex("6302ac8a85bafafe377bd7dd")
+	oid, _ := bson.ObjectIDFromHex("6302ac8a85bafafe377bd7dd")
 
-	dateStrFrom := "12-12-2024"
-	dateStrTo := "29-12-2024"
-	tFrom, _ := time.Parse("02-01-2006", dateStrFrom)
+	dateStrFrom := "2025-03-21T00:00:00.000Z"
+	dateStrTo := "2025-03-29T00:00:00.000Z"
+	tFrom, _ := time.Parse("2006-01-02T15:04:05.000Z", dateStrFrom)
 	tFrom = tFrom.UTC()
-	tTo, _ := time.Parse("02-01-2006", dateStrTo)
+	tTo, _ := time.Parse("2006-01-02T15:04:05.000Z", dateStrTo)
 	tTo = tTo.UTC()
 
 	tests := []struct {
@@ -64,10 +63,10 @@ func TestSearch(t *testing.T) {
 		{
 			name: "Фильтрация по цене",
 			query: map[string]string{
-				"price": "100~200",
+				"price": "100~!200",
 			},
 			expected: Query{
-				Match: bson.M{"price": bson.M{"$gte": 100, "$lte": 200}},
+				Match: bson.M{"price": bson.M{"$gte": 100, "$lt": 200}},
 				Sort:  bson.D{{Key: "_id", Value: 1}},
 				Page:  1,
 				Limit: 30,
@@ -112,10 +111,10 @@ func TestSearch(t *testing.T) {
 		{
 			name: "Филтрация по интервалу дат",
 			query: map[string]string{
-				"params.load_index": "12-12-2024~!29-12-2024",
+				"update.time": "2025-03-21T00:00:00.000Z~!2025-03-29T00:00:00.000Z",
 			},
 			expected: Query{
-				Match: bson.M{"params.load_index": bson.M{"$gte": tFrom, "$lt": tTo}},
+				Match: bson.M{"update.time": bson.M{"$gte": tFrom, "$lt": tTo}},
 				Sort:  bson.D{{Key: "_id", Value: 1}},
 				Page:  1,
 				Limit: 30,

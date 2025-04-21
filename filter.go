@@ -6,8 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func processSort(sortValue string, res *Query) {
@@ -62,7 +61,7 @@ func processMatch(key, value string, res *Query) {
 		}
 
 		if len(params) == 1 {
-			if oid, err := primitive.ObjectIDFromHex(params[0]); err == nil {
+			if oid, err := bson.ObjectIDFromHex(params[0]); err == nil {
 				res.Match[key] = oid
 			} else {
 				res.Match[key] = params[0]
@@ -72,7 +71,7 @@ func processMatch(key, value string, res *Query) {
 			result := make([]any, 0, len(params))
 
 			for _, param := range params {
-				if oid, err := primitive.ObjectIDFromHex(param); err == nil {
+				if oid, err := bson.ObjectIDFromHex(param); err == nil {
 					typeString = false
 					result = append(result, oid)
 				} else {
@@ -135,12 +134,12 @@ func processRange(key, value string, res *Query) {
 		return nil
 	}
 
-	if gtInt := processParam(values[0], "$gt"); gtInt != nil {
+	if gtInt := processParam(values[0], "$gte"); gtInt != nil {
 		for k, v := range gtInt {
 			rangeQuery[k] = v
 		}
 	}
-	if ltInt := processParam(values[1], "$lt"); ltInt != nil {
+	if ltInt := processParam(values[1], "$lte"); ltInt != nil {
 		for k, v := range ltInt {
 			rangeQuery[k] = v
 		}
